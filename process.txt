@@ -1,0 +1,23 @@
+# Per-photo processing overrides for process.py.
+# Lines beginning with `#` and blank lines are ignored.
+#
+# One field per line:  NNN.field=value     (NNN = 001..100, zero-padded or not)
+#
+# Fields and defaults:
+#   rot       rotation angle in degrees, positive = counter-clockwise.
+#             Disables auto-straighten for this photo and uses the given angle.
+#   no_rot    if 1/true/yes, disables auto-straighten (no manual angle either).
+#             Default: auto-straighten enabled.
+#   crop      top | center | bottom | NN%      Default: center.
+#             For portrait sources the anchor is vertical; for landscape, horizontal.
+#   sharp    0..2  multiplier on default sharpening   (default 1.0; 0 = off)
+#   sat      0..2  multiplier on default saturation   (default 1.0)
+#   denoise  on | off                                 (default on)
+#
+# Examples (uncomment and edit as needed):
+#
+# 042.rot=1.5
+# 042.crop=top
+# 007.sat=1.3
+# 015.denoise=off
+# 022.no_rot=1

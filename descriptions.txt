@@ -1,0 +1,11 @@
+# 100 Türen Saarbrücken — captions sidecar
+# Format:  NNN=text   (one per line, UTF-8)
+# Lines starting with `#` and blank lines are ignored.
+# Keys not present here render without a caption.
+# Examples — edit/add as you go:
+
+# 001=Jugendstil-Eingang in der Bahnhofstraße
+# 003=Klosterpforte St. Johann
+# 007=Industrietür Burbach
+# 042=Schmiedeeisernes Gitter, Alt-Saarbrücken
+011=Test description

@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Einhundert Türen Saarbrückens</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font:14px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:#fafafa;color:#222;padding:32px 16px}
+@media (max-width:600px){body{padding:16px 8px}}
+header{text-align:center;margin:8px 0 36px}
+h1{font-size:1.5rem;font-weight:300;letter-spacing:.04em}
+#g{display:grid;grid-template-columns:repeat(5,1fr);gap:28px}
+@media (max-width:900px){#g{grid-template-columns:repeat(3,1fr);gap:20px}}
+@media (max-width:600px){#g{grid-template-columns:repeat(2,1fr);gap:14px}}
+.tile{display:flex;flex-direction:column}
+.tile figure{aspect-ratio:4/5;position:relative}
+.tile img{width:100%;height:100%;object-fit:cover;cursor:zoom-in;display:block;opacity:0;transition:opacity .5s ease-in}
+.tile img.loaded{opacity:1}
+.num{display:none}
+.pin{position:absolute;bottom:6px;right:8px;text-decoration:none;font-size:14px;color:rgba(0,0,0,.5);line-height:1;letter-spacing:0}
+.pin:hover{color:#000}
+.miss figure{background:transparent}
+.miss figure::after{content:"noch nicht";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:rgba(0,0,0,.35);font-size:13px;letter-spacing:.04em;opacity:0;transition:opacity .25s;pointer-events:none}
+.miss:hover figure::after,.miss:focus-within figure::after{opacity:1}
+figcaption{position:absolute;left:0;right:0;bottom:10px;padding:0 12px;text-align:center;font-size:12px;line-height:1.4;color:rgba(255,255,255,.95);text-shadow:0 1px 3px rgba(0,0,0,.75);opacity:0;transition:opacity .25s;pointer-events:none}
+.tile:hover figcaption,.tile:focus-within figcaption{opacity:1}
+#bottom{margin:48px auto 8px;max-width:900px;padding:16px;font-size:13px;line-height:1.6;color:#777;text-align:center}
+#bottom:empty{display:none}
+#bottom a{color:inherit}
+#lb{border:0;padding:0;background:transparent;max-width:none;max-height:none;width:100vw;height:100vh;opacity:0;transition:opacity .35s ease,display .35s allow-discrete,overlay .35s allow-discrete}
+#lb[open]{opacity:1}
+@starting-style{#lb[open]{opacity:0}}
+#lb::backdrop{background:rgba(0,0,0,0);transition:background .35s ease,display .35s allow-discrete,overlay .35s allow-discrete}
+#lb[open]::backdrop{background:rgba(0,0,0,.94)}
+@starting-style{#lb[open]::backdrop{background:rgba(0,0,0,0)}}
+#lb img{width:100%;height:100%;object-fit:contain;cursor:zoom-out;background:transparent}
+#lbcap{position:fixed;left:0;right:0;bottom:28px;text-align:center;color:rgba(255,255,255,.6);font-size:13px;letter-spacing:.02em;padding:0 24px;pointer-events:none;opacity:0;transition:opacity .4s ease-in .15s}
+#lb[open] #lbcap:not(:empty){opacity:1}
+@media (prefers-color-scheme:dark){
+  body{background:#111;color:#eee}
+  .miss figure::after{color:rgba(255,255,255,.35)}
+  #bottom{color:#888}
+  .pin{color:rgba(255,255,255,.5)}
+  .pin:hover{color:#fff}
+}
+</style>
+</head>
+<body>
+<header><h1>Einhundert Türen Saarbrückens</h1></header>
+<main id="g"></main>
+<footer id="bottom"><!--BEGIN_BOTTOM--><p>Ein Fotoprojekt aus Saarbrücken — gesammelt 2026.</p>
+<p>Kontakt: <a href="mailto:mib431@gmail.com">mib431@gmail.com</a></p><!--END_BOTTOM--></footer>
+<dialog id="lb"><img alt=""><div id="lbcap"></div></dialog>
+<script>
+/*BEGIN*/const DATA=[null,null,null,null,null,null,null,null,null,null,{"desc":"Test description"},null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null];/*END*/
+(function(){
+  const g=document.getElementById('g'),lb=document.getElementById('lb'),lbImg=lb.querySelector('img'),lbCap=document.getElementById('lbcap');
+  const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  DATA.forEach((d,i)=>{
+    const num=i+1;
+    const n=String(num).padStart(3,'0');
+    const t=document.createElement('article');
+    t.className='tile';
+    if(d){
+      const hasGps=d.lat!=null&&d.lon!=null;
+      const pin=hasGps?`<a class="pin" href="https://www.google.com/maps?q=${d.lat},${d.lon}" target="_blank" rel="noopener" title="${d.lat}, ${d.lon}" aria-label="Karte">↗</a>`:'';
+      const desc=d.desc?` data-desc="${esc(d.desc)}"`:'';
+      const cap=d.desc?`<figcaption>${esc(d.desc)}</figcaption>`:'';
+      t.innerHTML=
+        `<figure>`+
+          `<img src="${n}.jpg" alt="${n}" loading="lazy" decoding="async"${desc}>`+
+          pin+
+          cap+
+        `</figure>`;
+      const im=t.querySelector('img');
+      im.onload=()=>im.classList.add('loaded');
+      im.onclick=()=>{lbImg.src=`${n}.jpg`;lbCap.textContent=im.dataset.desc||'';lb.showModal()};
+      im.onerror=()=>{t.classList.add('miss');t.querySelector('figure').innerHTML='';};
+    }else{
+      t.classList.add('miss');
+      t.innerHTML=`<figure></figure>`;
+    }
+    g.appendChild(t);
+  });
+  lb.onclick=()=>{lb.close()};
+  lb.addEventListener('close',()=>{lbImg.src='';lbCap.textContent=''});
+})();
+</script>
+</body>
+</html>
