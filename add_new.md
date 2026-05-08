@@ -90,7 +90,7 @@ OK   042 rot=auto +0.94deg crop=center -> 1280x1600
 INFO processed=1 skipped=29 errored=0
 ```
 
-What happens per photo: EXIF orientation applied → dominant verticals auto-straightened (clamped to ±5°) → centered 4:5 crop → NL-means denoise → unsharp mask → +15% saturation → resized so long edge ≤ 1600 px → saved to `042.jpg` at root with GPS preserved.
+What happens per photo: EXIF orientation applied → dominant verticals auto-straightened (clamped to ±5°, skipped if scene's near-vertical lines disagree, i.e. low confidence) → centered 4:5 crop → NL-means denoise → unsharp mask → +15% saturation → resized so long edge ≤ 1600 px → saved to `042.jpg` at root with GPS preserved.
 
 Slow: ~3-5 s per photo (denoise is the bottleneck). On re-run, untouched photos are skipped (mtime cache).
 
@@ -114,13 +114,13 @@ OK   injected into gallery.html
 ```
 
 Warnings (not errors):
-- `WARN NNN.jpg no GPS - placeholder` — photo has no GPS EXIF.
-- `WARN description for NNN dropped (no GPS)` — caption set but tile is placeholder.
-- `WARN NNN.jpg missing - description discarded` — caption set for slot with no JPG yet.
+- `WARN NNN.jpg no GPS - shown without map pin` — photo has no GPS EXIF. Tile renders but the `↗` map link is omitted. See `mi12.md` for retroactive injection via ExifTool.
+- `WARN NNN.jpg missing - description discarded` — caption set in `descriptions.txt` for slot with no JPG yet.
+- `WARN bottom.html missing - footer left empty` — optional footer fragment not present; page still works, footer is hidden via CSS `:empty`.
 
 ### 6. Preview locally
 
-Double-click `gallery.html`. Confirm new tile renders, 📍 hits right map location, caption (if any) displays.
+Double-click `gallery.html`. Hover the new tile: caption (if any) fades in over the image, `↗` link bottom-right opens Google Maps at the right location. Click image → fade-in lightbox with full caption below. Empty slots stay silent until hovered, then reveal "noch nicht".
 
 ### 7. Publish
 

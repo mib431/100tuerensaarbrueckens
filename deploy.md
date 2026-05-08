@@ -32,14 +32,15 @@ In `C:\Work\claude_sandbox\100tuerensaarbruecken`:
 
 ```powershell
 git init
-git add gallery.html bake.py process.py descriptions.txt process.txt requirements.txt raw\.gitkeep
-git commit -m "initial: gallery + processing pipeline"
+git add .gitignore gallery.html bottom.html bake.py process.py descriptions.txt process.txt requirements.txt CLAUDE.md add_new.md deploy.md route.md mi12.md dns.md
+git add raw\*.jpg *.jpg     # whatever photos already exist
+git commit -m "initial: gallery + processing pipeline + docs"
 git branch -M main
 git remote add origin https://github.com/<username>/<repo>.git
 git push -u origin main
 ```
 
-(Create the empty `raw\.gitkeep` file first to track the empty directory: `New-Item raw\.gitkeep -ItemType File`.)
+If `raw/` is still empty, create the placeholder so the directory is tracked: `New-Item raw\.gitkeep -ItemType File` and add it to the `git add` line.
 
 First push prompts for auth. Use a **Personal Access Token** (classic, scope `repo`) as password, not your account password. Generate at github.com → Settings → Developer settings → Personal access tokens → Tokens (classic) → Generate new token. Save it in your password manager.
 
@@ -72,9 +73,10 @@ Wait ~1 minute. URL appears at top of Pages settings: `https://<username>.github
 ### 6. Verify
 
 Open `https://<username>.github.io/<repo>/gallery.html` in browser. Expect:
-- Tiles render in a 4:5-portrait grid. Present photos show enhanced (straightened, denoised, sharpened, slightly more saturated). Missing show "noch nicht da".
-- Click image → lightbox shows the full 4:5 processed photo.
-- Click 📍 → Google Maps at correct GPS.
+- Tiles render in a 4:5-portrait grid (5 cols desktop, 3 tablet, 2 phone). Present photos show enhanced (straightened, denoised, sharpened, slightly more saturated). Empty slots are silent voids; hover reveals "noch nicht".
+- Hover a present tile → caption (if any) fades in over the image; `↗` link bottom-right opens Google Maps.
+- Click image → fade-in lightbox shows the full 4:5 processed photo with caption below; click again or press Esc to close.
+- Light/dark theme follows OS preference automatically.
 
 If 404: Pages may still be building. Wait, hard-refresh.
 
@@ -108,7 +110,9 @@ For 100 doors, option 1 is fine.
 
 ## Custom domain (optional)
 
-Settings → Pages → Custom domain → enter `tueren.example.com` → Save. Then add a DNS CNAME from `tueren.example.com` to `<username>.github.io`. Wait for HTTPS cert (automatic, ~10 min). Free.
+Quick path: Settings → Pages → Custom domain → enter `tueren.example.com` → Save. Then add a DNS CNAME from `tueren.example.com` to `<username>.github.io`. Wait for HTTPS cert (automatic, ~10 min). Free.
+
+For full instructions including apex domains (`100tuerensaarbrueckens.de` style — needs A records, not CNAME), registrar comparison for `.de`, name suggestions, and ongoing maintenance, see `dns.md`.
 
 ## Make repo public-readable but commits private
 

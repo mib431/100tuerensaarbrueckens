@@ -18,7 +18,9 @@ h1{font-size:1.5rem;font-weight:300;letter-spacing:.04em}
 .tile figure{aspect-ratio:4/5;position:relative}
 .tile img{width:100%;height:100%;object-fit:cover;cursor:zoom-in;display:block;opacity:0;transition:opacity .5s ease-in}
 .tile img.loaded{opacity:1}
-.num{display:none}
+.num{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,.55);color:#fff;font:600 22px/1 ui-monospace,SFMono-Regular,Menlo,monospace;padding:8px 14px;border-radius:3px;pointer-events:none;opacity:0;transition:opacity .25s;letter-spacing:.05em}
+.tile:not(.miss):hover .num,.tile:not(.miss):focus-within .num{opacity:1}
+.miss .num{display:none}
 .pin{position:absolute;bottom:6px;right:8px;text-decoration:none;font-size:14px;color:rgba(0,0,0,.5);line-height:1;letter-spacing:0}
 .pin:hover{color:#000}
 .miss figure{background:transparent}
@@ -71,6 +73,7 @@ figcaption{position:absolute;left:0;right:0;bottom:10px;padding:0 12px;text-alig
       t.innerHTML=
         `<figure>`+
           `<img src="${n}.jpg" alt="${n}" loading="lazy" decoding="async"${desc}>`+
+          `<span class="num">${num}</span>`+
           pin+
           cap+
         `</figure>`;
