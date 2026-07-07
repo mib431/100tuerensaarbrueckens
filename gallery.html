@@ -88,7 +88,7 @@ figcaption{position:absolute;left:0;right:0;bottom:10px;padding:0 12px;text-alig
     t.className='tile';
     if(d){
       const hasGps=d.lat!=null&&d.lon!=null;
-      const pin=hasGps?`<a class="pin" href="https://www.google.com/maps?q=${d.lat},${d.lon}" target="_blank" rel="noopener" title="${d.lat}, ${d.lon}" aria-label="Karte">↗</a>`:'';
+      const pin=hasGps?`<a class="pin" href="https://www.openstreetmap.org/?mlat=${d.lat}&amp;mlon=${d.lon}#map=18/${d.lat}/${d.lon}" target="_blank" rel="noopener" title="${d.lat}, ${d.lon}" aria-label="Karte">↗</a>`:'';
       const cap=d.desc?`<figcaption>${esc(d.desc)}</figcaption>`:'';
       t.innerHTML=
         `<figure>`+
