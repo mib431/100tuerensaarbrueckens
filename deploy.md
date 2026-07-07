@@ -74,8 +74,8 @@ Wait ~1 minute. URL appears at top of Pages settings: `https://<username>.github
 
 Open `https://<username>.github.io/<repo>/gallery.html` in browser. Expect:
 - Tiles render in a 4:5-portrait grid (5 cols desktop, 3 tablet, 2 phone). Present photos show enhanced (straightened, denoised, sharpened, slightly more saturated). Empty slots are silent voids; hover reveals "noch nicht".
-- Hover a present tile → caption (if any) fades in over the image; `↗` link bottom-right opens Google Maps.
-- Click image → fade-in lightbox shows the full 4:5 processed photo with caption below; click again or press Esc to close.
+- Hover a present tile → caption (if any) fades in over the image; `↗` link bottom-right opens OpenStreetMap.
+- Click image → fade-in lightbox shows the full 4:5 processed photo with caption below; prev/next buttons or arrow keys cycle through slots (wraps at ends); click again or press Esc to close.
 - Light/dark theme follows OS preference automatically.
 
 If 404: Pages may still be building. Wait, hard-refresh.

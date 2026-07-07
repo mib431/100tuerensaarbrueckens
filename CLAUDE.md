@@ -19,7 +19,7 @@ raw/NNN.jpg ──process.py──> NNN.jpg (root) ──┐
 1. **`raw/NNN.jpg`** — originals, untouched. Filename rule is strict: zero-padded 3 digits, lowercase `.jpg`, range `001`–`100`. `bake.py` reads GPS EXIF from these only indirectly (it reads from the processed root JPGs, which preserve GPS).
 2. **`process.py`** — reads `raw/`, writes processed copies to project root as `NNN.jpg`. Per-photo: EXIF orientation → vertical-line auto-straighten (Hough lines, clamped ±5°) → 4:5 center crop → NL-means denoise → unsharp mask → +15% saturation → resize long-edge ≤1600 px → save quality 88 with GPS preserved, orientation tag cleared. Mtime cache: only reprocesses when raw or `process.txt` is newer than output. Slow (~3-5 s/photo, denoise dominates).
 3. **`bake.py`** — walks slots 1..100 at project root, reads GPS from each present `NNN.jpg`, merges with `descriptions.txt`, emits a `const DATA=[...]` JS array of length 100 (entries are `null` for missing slots, `{lat, lon, desc?}` otherwise). With `--inject gallery.html` it does **two** in-place replacements in one pass: the `DATA` block between `/*BEGIN*/.../*END*/`, and the page footer between `<!--BEGIN_BOTTOM-->...<!--END_BOTTOM-->` (content sourced from `bottom.html`).
-4. **`gallery.html`** — single self-contained file. Inline CSS+JS, no dependencies. Parses `DATA`, renders 100 tiles (real or placeholder). 📍 link → Google Maps. Click image → `<dialog>` lightbox. Footer (`#bottom`) hidden via `:empty` if `bottom.html` absent.
+4. **`gallery.html`** — single self-contained file. Inline CSS+JS, no dependencies. Parses `DATA`, renders 100 tiles (real or placeholder). 📍 link → OpenStreetMap. Click image → `<dialog>` lightbox with prev/next (buttons, wraps around, arrow keys) cycling through slots that have data. Footer (`#bottom`) hidden via `:empty` if `bottom.html` absent.
 
 ## Sidecar files
 
@@ -55,7 +55,7 @@ Deploy: `git push` to GitHub Pages, see `deploy.md`. Standard add-photo flow in 
   Both pairs use a shared `inject()` driver in `bake.py` keyed by exact begin/end strings; removing, renaming, or duplicating any marker breaks the bake.
 - **GPS is read from the *processed* root JPG, not from `raw/`.** `process.py` preserves the GPS EXIF block while clearing the orientation tag (writes orientation=1). If you change `process.py` to drop EXIF, `bake.py` will produce all-pin-less tiles.
 - **The mtime cache assumes only `process.txt` is the global trigger.** If you add another sidecar that affects processing, plumb it through `needs_rebuild()` or runs become silently stale.
-- **`gallery.html` is self-contained on purpose** (single file, no external CSS/JS, no fonts, no map tiles). Map "pin" is just a Google Maps deep link, not an embedded map. Keep it that way unless explicitly asked.
+- **`gallery.html` is self-contained on purpose** (single file, no external CSS/JS, no fonts, no map tiles). Map "pin" is just an OpenStreetMap deep link, not an embedded map. Keep it that way unless explicitly asked.
 - **Idempotency.** Re-running `process.py` and `bake.py` on unchanged inputs must be a no-op (or near-no-op). Don't introduce timestamps or random IDs into output.
 
 ## Architecture notes

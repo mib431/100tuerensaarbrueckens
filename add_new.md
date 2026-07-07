@@ -120,7 +120,7 @@ Warnings (not errors):
 
 ### 6. Preview locally
 
-Double-click `gallery.html`. Hover the new tile: caption (if any) fades in over the image, `↗` link bottom-right opens Google Maps at the right location. Click image → fade-in lightbox with full caption below. Empty slots stay silent until hovered, then reveal "noch nicht".
+Double-click `gallery.html`. Hover the new tile: caption (if any) fades in over the image, `↗` link bottom-right opens OpenStreetMap at the right location. Click image → fade-in lightbox with full caption below; prev/next buttons or arrow keys step through other slots, wrapping at the ends. Empty slots stay silent until hovered, then reveal "noch nicht".
 
 ### 7. Publish
 
