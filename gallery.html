@@ -40,6 +40,12 @@ figcaption{position:absolute;left:0;right:0;bottom:10px;padding:0 12px;text-alig
 #lb img{width:100%;height:100%;object-fit:contain;cursor:zoom-out;background:transparent}
 #lbcap{position:fixed;left:0;right:0;bottom:28px;text-align:center;color:rgba(255,255,255,.6);font-size:13px;letter-spacing:.02em;padding:0 24px;pointer-events:none;opacity:0;transition:opacity .4s ease-in .15s}
 #lb[open] #lbcap:not(:empty){opacity:1}
+#lb .nav{position:fixed;top:50%;transform:translateY(-50%);width:48px;height:48px;border:0;border-radius:50%;background:rgba(255,255,255,.08);color:rgba(255,255,255,.75);font:300 28px/1 system-ui,sans-serif;cursor:pointer;opacity:0;transition:opacity .3s ease,background .2s}
+#lb[open] .nav{opacity:1}
+#lb .nav:hover{background:rgba(255,255,255,.2);color:#fff}
+#lbPrev{left:14px}
+#lbNext{right:14px}
+@media (max-width:600px){#lb .nav{width:38px;height:38px;font-size:20px}}
 @media (prefers-color-scheme:dark){
   body{background:#111;color:#eee}
   .miss figure::after{color:rgba(255,255,255,.35)}
@@ -52,12 +58,29 @@ figcaption{position:absolute;left:0;right:0;bottom:10px;padding:0 12px;text-alig
 <main id="g"></main>
 <footer id="bottom"><!--BEGIN_BOTTOM--><p>Ein Fotoprojekt aus Saarbrücken — gesammelt 2026.</p>
 <p>Kontakt: <a href="mailto:mib431@gmail.com">mib431@gmail.com</a></p><!--END_BOTTOM--></footer>
-<dialog id="lb"><img alt=""><div id="lbcap"></div></dialog>
+<dialog id="lb"><button id="lbPrev" class="nav" aria-label="Vorheriges Foto" type="button">&#8249;</button><img alt=""><button id="lbNext" class="nav" aria-label="Nächstes Foto" type="button">&#8250;</button><div id="lbcap"></div></dialog>
 <script>
 /*BEGIN*/const DATA=[{"lat":49.236404,"lon":7.003228},{"lat":49.234492,"lon":7.001644},{},{"lat":49.235329,"lon":7.002254},{},null,{"lat":49.245165,"lon":7.00993},{"lat":49.240573,"lon":7.015714},{"lat":49.244886,"lon":7.019399},{"lat":49.237413,"lon":7.005564},{"desc":"Test description"},{"lat":49.242085,"lon":7.01502},{"lat":49.228226,"lon":7.006931},null,null,{"lat":49.228052,"lon":7.006472},null,{"lat":49.24283,"lon":7.007381},{},null,null,null,{"lat":49.238204,"lon":7.000163},{"lat":49.236469,"lon":6.998798},{},{"lat":49.236706,"lon":7.00019},{"lat":49.24372,"lon":7.008998},{"lat":49.238001,"lon":7.007839},null,null,null,{"lat":49.230816,"lon":7.006675},{"lat":49.236716,"lon":6.996495},{"lat":49.231113,"lon":7.006731},null,{"lat":49.236405,"lon":7.010283},null,null,{"lat":49.236664,"lon":7.000782},{"lat":49.237428,"lon":6.999248},{"lat":49.236664,"lon":7.000782},{"lat":49.237593,"lon":6.999271},{"lat":49.236664,"lon":7.000782},{"lat":49.236066,"lon":7.010552},{"lat":49.247739,"lon":7.010067},null,{"lat":49.230625,"lon":7.015835},null,{"lat":49.230119,"lon":7.010406},{"lat":49.229741,"lon":7.003334},null,null,null,{"lat":49.230664,"lon":7.010622},{"lat":49.228884,"lon":7.006018},{"lat":49.237988,"lon":6.998323},null,null,{"lat":49.239631,"lon":7.014269},{"lat":49.262745,"lon":7.005431},{"lat":49.231022,"lon":7.010792},{"lat":49.236501,"lon":7.002179},null,null,null,null,null,{"lat":49.228846,"lon":7.006062},null,null,null,null,null,{"lat":49.237482,"lon":7.000516},null,null,null,null,null,null,null,{"lat":49.240122,"lon":7.015457},null,null,null,null,null,null,null,null,{"lat":49.23712,"lon":7.002757},{"lat":49.231011,"lon":7.00802},null,null,{"lat":49.240498,"lon":7.017143},{"lat":49.23103,"lon":7.00828},null,{"lat":49.22976,"lon":7.008375},null,{"lat":49.230905,"lon":7.008857}];/*END*/
 (function(){
   const g=document.getElementById('g'),lb=document.getElementById('lb'),lbImg=lb.querySelector('img'),lbCap=document.getElementById('lbcap');
+  const lbPrev=document.getElementById('lbPrev'),lbNext=document.getElementById('lbNext');
   const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const openIdxs=DATA.map((d,i)=>d?i:-1).filter(i=>i!==-1);
+  let curIdx=-1;
+  const openLB=idx=>{
+    const d=DATA[idx];
+    const n=String(idx+1).padStart(3,'0');
+    curIdx=idx;
+    lbImg.src=`${n}.jpg`;
+    lbCap.textContent=d.desc||'';
+    lb.showModal();
+  };
+  const step=delta=>{
+    const pos=openIdxs.indexOf(curIdx);
+    if(pos===-1)return;
+    const next=(pos+delta+openIdxs.length)%openIdxs.length;
+    openLB(openIdxs[next]);
+  };
   DATA.forEach((d,i)=>{
     const num=i+1;
     const n=String(num).padStart(3,'0');
@@ -66,18 +89,17 @@ figcaption{position:absolute;left:0;right:0;bottom:10px;padding:0 12px;text-alig
     if(d){
       const hasGps=d.lat!=null&&d.lon!=null;
       const pin=hasGps?`<a class="pin" href="https://www.google.com/maps?q=${d.lat},${d.lon}" target="_blank" rel="noopener" title="${d.lat}, ${d.lon}" aria-label="Karte">↗</a>`:'';
-      const desc=d.desc?` data-desc="${esc(d.desc)}"`:'';
       const cap=d.desc?`<figcaption>${esc(d.desc)}</figcaption>`:'';
       t.innerHTML=
         `<figure>`+
-          `<img src="${n}.jpg" alt="${n}" loading="lazy" decoding="async"${desc}>`+
+          `<img src="${n}.jpg" alt="${n}" loading="lazy" decoding="async">`+
           `<span class="num">${num}</span>`+
           pin+
           cap+
         `</figure>`;
       const im=t.querySelector('img');
       im.onload=()=>im.classList.add('loaded');
-      im.onclick=()=>{lbImg.src=`${n}.jpg`;lbCap.textContent=im.dataset.desc||'';lb.showModal()};
+      im.onclick=()=>openLB(i);
       im.onerror=()=>{t.classList.add('miss');t.querySelector('figure').innerHTML='';};
     }else{
       t.classList.add('miss');
@@ -86,7 +108,14 @@ figcaption{position:absolute;left:0;right:0;bottom:10px;padding:0 12px;text-alig
     g.appendChild(t);
   });
   lb.onclick=()=>{lb.close()};
-  lb.addEventListener('close',()=>{lbImg.src='';lbCap.textContent=''});
+  lb.addEventListener('close',()=>{lbImg.src='';lbCap.textContent='';curIdx=-1});
+  lbPrev.onclick=e=>{e.stopPropagation();step(-1)};
+  lbNext.onclick=e=>{e.stopPropagation();step(1)};
+  document.addEventListener('keydown',e=>{
+    if(!lb.open)return;
+    if(e.key==='ArrowRight')step(1);
+    else if(e.key==='ArrowLeft')step(-1);
+  });
 })();
 </script>
 </body>
