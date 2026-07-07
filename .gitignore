@@ -2,6 +2,8 @@ __pycache__/
 *.pyc
 .venv/
 venv/
+done/
+raw/
 *.jpg_original
 .DS_Store
 Thumbs.db
